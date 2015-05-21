@@ -32,7 +32,7 @@ Airbnb.availability(4569115, {
 ```
 - To run the example
 ```javascript
-git clone airapi
+git clone https://github.com/phamtrisi/airapi.git airapi
 cd airapi && node Main.js
 ```
 
