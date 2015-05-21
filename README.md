@@ -45,5 +45,5 @@ Airbnb.availability(hosting ID, options, successCallback, failureCallback)
 - **failureCallback**(error, response)
 
 ##License
-What license? This is probably gonna be struck down by Airbnb soon :"(
+What license? I'd be happy if it doesn't get struck down.
 Use at your own risk. You've been warned.
