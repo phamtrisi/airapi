@@ -30,6 +30,11 @@ Airbnb.availability(4569115, {
   console.log(info);
 });
 ```
+- To run the example
+```javascript
+git clone airapi
+cd airapi && node Main.js
+```
 
 ##Search listings
 Airbnb.search(options, successCallback, failureCallback)
