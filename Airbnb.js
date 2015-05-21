@@ -14,8 +14,7 @@ var request = require('request'),
                 }
             },
             AIRBNB_PREFIX = 'https://www.airbnb.com',
-            SEARCH_URL = AIRBNB_PREFIX + '/search/search_results',
-            test_url = 'https://www.airbnb.com/search/search_results?location=London%2C+United+Kingdom&checkin=05%2F29%2F2015&checkout=05%2F31%2F2015&guests=2';
+            SEARCH_URL = AIRBNB_PREFIX + '/search/search_results';
 
         /**
          * HELPERS
@@ -49,7 +48,29 @@ var request = require('request'),
         /**
          * Search listings
          * @param  {Object} options - Search options
-         * @return {Object} - List of found listings       
+         * @return {Object} - List of found listings
+         *
+         * Available options 
+         * options = {
+         *   checkin: {String},
+         *   checkout: {String},
+         *   guests: {Number},
+         *   page: {Number},
+         *   location: {String}, e.g: 'New York, NY' or 'Seattle, WA'
+         *   price_min: {Number},
+         *   price_max: {Number},
+         *   min_bedrooms: {Number},
+         *   min_bathrooms: {Number},
+         *   min_beds: {Number},
+         *   superhost: {Boolean},
+         *   hosting_amenities: {Array of id}, e.g: [1,4]
+         *   property_type_id: {Array of id}, e.g: [1]
+         *   languages: {Array of id}, e.g: [1,64]
+         *   keywords: {String}, e.g: 'ocean,view,balcony'
+         *   room_types: {Array}, e.g: ['Entire home/apt', 'Private room', 'Shared room']
+         *   ib: {Boolean}, instant-book,
+         *   neighborhoods: {Array}, e.g: ['Belltown', 'Queen Anne']
+         * }
          */
         function search(options, successCallback, failureCallback) {
             // Make sure search options is provided
