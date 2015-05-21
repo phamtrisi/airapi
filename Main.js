@@ -8,7 +8,11 @@ Airbnb.search({
     guests: 2,
     page: 2,
     ib: true
-}, function(err, res, body) {
-    var result = JSON.parse(body);
-    console.log(result.logging_info.search.result)
+}, function(err, res, listings) {
+  console.log(listings);
+});
+
+
+Airbnb.availability(4569115, {}, function(err, res, info) {
+  console.log(info);
 });

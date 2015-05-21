@@ -1,121 +1,168 @@
 var request = require('request'),
-    _ = require('lodash'),
-    Airbnb = (function Airbnb() {
-        var today = new Date(),
-            tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000),
-            SEARCH_DEFAULT = {
-                guests: 1,
-                checkin: [today.getMonth() + 1, today.getDate(), today.getFullYear()].join('/'), // today
-                checkout: [tomorrow.getMonth() + 1, tomorrow.getDate(), tomorrow.getFullYear()].join('/'), // tomorrow
-            },
-            CONFIGS_DEFAULT = {
-                headers: {
-                    'User-Agent': 'request'
-                }
-            },
-            AIRBNB_PREFIX = 'https://www.airbnb.com',
-            SEARCH_URL = AIRBNB_PREFIX + '/search/search_results';
-
-        /**
-         * HELPERS
-         */
-
-        /**
-         * Serialize an object into a valid URL string
-         * @param  {[Object]} obj - Params object
-         * @return {[String]} - A valid encoded URL string
-         */
-        function _serialize(obj) {
-            var params = [],
-                encodedBrackets = encodeURIComponent('[]');
-
-            _.forOwn(obj, function(value, key) {
-                if (typeof value === 'string' ||
-                    typeof value === 'number' ||
-                    typeof value === 'boolean') {
-                    params.push(key + '=' + encodeURIComponent(value));
-                } else if (typeof value === 'object' && Array.isArray(value)) {
-                    params.push(value.map(function(param) {
-                        return key + encodedBrackets + '=' + encodeURIComponent(param);
-                    }).join('&'));
-                }
-            });
-
-            return params.join('&');
+  _ = require('lodash'),
+  Airbnb = (function Airbnb() {
+    var today = new Date(),
+      tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000),
+      SEARCH_DEFAULT = {
+        guests: 1,
+        checkin: [today.getMonth() + 1, today.getDate(), today.getFullYear()].join('/'), // today
+        checkout: [tomorrow.getMonth() + 1, tomorrow.getDate(), tomorrow.getFullYear()].join('/'), // tomorrow
+      },
+      CONFIGS_DEFAULT = {
+        headers: {
+          'User-Agent': 'request'
         }
+      },
+      API_KEY = 'd306zoyjsyarp7ifhu67rjxn52tv0t20',
+      AVAILABILITY_DEFAULT = {
+        key: API_KEY,
+        currency: 'USD',
+        locale: 'en',
+        month: today.getMonth() + 1,
+        year: today.getFullYear(),
+        count: 3, // Get 3 months of availabilities
+        _format: 'with_conditions'
+      },
+      AIRBNB_PREFIX = 'https://www.airbnb.com',
+      SEARCH_URL = AIRBNB_PREFIX + '/search/search_results',
+      AVAILABILITY_URL = AIRBNB_PREFIX + '/api/v2/calendar_months';
 
+    /**
+     * HELPERS
+     */
 
-        /**
-         * Search listings
-         * @param  {Object} options - Search options
-         * @return {Object} - List of found listings
-         *
-         * Available options 
-         * options = {
-         *   checkin: {String},
-         *   checkout: {String},
-         *   guests: {Number},
-         *   page: {Number},
-         *   location: {String}, e.g: 'New York, NY' or 'Seattle, WA'
-         *   price_min: {Number},
-         *   price_max: {Number},
-         *   min_bedrooms: {Number},
-         *   min_bathrooms: {Number},
-         *   min_beds: {Number},
-         *   superhost: {Boolean},
-         *   hosting_amenities: {Array of id}, e.g: [1,4]
-         *   property_type_id: {Array of id}, e.g: [1]
-         *   languages: {Array of id}, e.g: [1,64]
-         *   keywords: {String}, e.g: 'ocean,view,balcony'
-         *   room_types: {Array}, e.g: ['Entire home/apt', 'Private room', 'Shared room']
-         *   ib: {Boolean}, instant-book,
-         *   neighborhoods: {Array}, e.g: ['Belltown', 'Queen Anne']
-         * }
-         */
-        function search(options, successCallback, failureCallback) {
-            // Make sure search options is provided
-            if (!options || typeof options !== 'object') {
-                throw new Error('Must provide search options');
-            }
+    /**
+     * Serialize an object into a valid URL string
+     * @param  {[Object]} obj - Params object
+     * @return {[String]} - A valid encoded URL string
+     */
+    function _serialize(obj) {
+      var params = [],
+        encodedBrackets = encodeURIComponent('[]');
 
-            // Make sure at least dates of travel and location are provided
-            if (!options.hasOwnProperty('location')) {
-                throw new Error('Must provide location');
-            }
-
-            var searchOptions = _.assign({}, SEARCH_DEFAULT, options),
-                requestConfigs = _.assign({}, CONFIGS_DEFAULT, {
-                    url: SEARCH_URL + '?' + _serialize(searchOptions)
-                });
-
-            // Make request
-            request(requestConfigs, function(error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    successCallback(error, response, body);
-                } else if (error && typeof failureCallback === 'function') {
-                    failureCallback(error, response, body);
-                }
-            });
+      _.forOwn(obj, function(value, key) {
+        if (typeof value === 'string' ||
+          typeof value === 'number' ||
+          typeof value === 'boolean') {
+          params.push(key + '=' + encodeURIComponent(value));
+        } else if (typeof value === 'object' && Array.isArray(value)) {
+          params.push(value.map(function(param) {
+            return key + encodedBrackets + '=' + encodeURIComponent(param);
+          }).join('&'));
         }
+      });
 
-        function info(listings, options) {
-            return {
-                status: 'ok'
-            };
+      return params.join('&');
+    }
+
+
+    /**
+     * Search hostings
+     * @param  {Object} options - Search options
+     * @param  {Function} successCallback(err, res, listings) - Callback to invoke if successful 
+     * @param  {Function} failureCallback(err, res) - Callback to invoke if failed 
+     * @return {Void} - List of found hostings is passed through callbacks
+     *
+     * Available options 
+     * options = {
+     *   checkin: {String},
+     *   checkout: {String},
+     *   guests: {Number},
+     *   page: {Number},
+     *   location: {String}, e.g: 'New York, NY' or 'Seattle, WA'
+     *   price_min: {Number},
+     *   price_max: {Number},
+     *   min_bedrooms: {Number},
+     *   min_bathrooms: {Number},
+     *   min_beds: {Number},
+     *   superhost: {Boolean},
+     *   hosting_amenities: {Array of id}, e.g: [1,4]
+     *   property_type_id: {Array of id}, e.g: [1]
+     *   languages: {Array of id}, e.g: [1,64]
+     *   keywords: {String}, e.g: 'ocean,view,balcony'
+     *   room_types: {Array}, e.g: ['Entire home/apt', 'Private room', 'Shared room']
+     *   ib: {Boolean}, instant-book,
+     *   neighborhoods: {Array}, e.g: ['Belltown', 'Queen Anne']
+     * }
+     */
+    function search(options, successCallback, failureCallback) {
+      // Make sure search options is provided
+      if (!options || typeof options !== 'object') {
+        throw new Error('Must provide search options');
+      }
+
+      // Make sure at least dates of travel and location are provided
+      if (!options.hasOwnProperty('location')) {
+        throw new Error('Must provide location');
+      }
+
+      var searchOptions = _.assign({}, SEARCH_DEFAULT, options),
+          requestConfigs = _.assign({}, CONFIGS_DEFAULT, {
+            url: SEARCH_URL + '?' + _serialize(searchOptions)
+          });
+
+      // Make request
+      request(requestConfigs, function(error, response, body) {
+        if (!error && response.statusCode == 200 && typeof successCallback === 'function') {
+          successCallback(error, response, JSON.parse(body));
+        } else if (error && typeof failureCallback === 'function') {
+          failureCallback(error, response);
         }
+      });
+    }
 
-        function availability(listings, options) {
-            return {
-                status: 'ok'
-            };
+
+    /**
+     * Get availability for a given hosting ID
+     * @param  {[Number/String]} hosting ID         [description]
+     * @param  {[Object]} options         [description]
+     * @param  {Function} successCallback(err, res, info) - Callback to invoke if successful 
+     * @param  {Function} failureCallback(err, res) - Callback to invoke if failed 
+     * @return {[Void]} - Listing info is passed through callbacks
+     *
+     * Available options
+     * options = {
+     *   key: {String}, provide your own API key if you have, otherwise leave this as default
+     *   currency: {String}, e.g: 'USD' or 'VND'
+     *   locale: {String}, e.g: 'en'
+     *   month: {Number/String}, 1-based. E.g: July = 7
+     *   year: {Number/String},
+     *   count: {Number}, // Get <x> months of availabilities starting at <month>
+     * }
+     */
+    function availability(hosting, options, successCallback, failureCallback) {
+      // Make sure we have enough params to continue
+      if (arguments.length < 2) {
+        throw new Error('Must provide hosting ID and search options');
+      }
+
+      if (!typeof hosting === 'number' &&
+        !typeof hosting === 'string') {
+        throw new Error('Hosting ID must be string or int');
+      }
+
+      var searchOptions = _.assign({
+            listing_id: hosting
+          }, AVAILABILITY_DEFAULT, options),
+          requestConfigs = _.assign({}, CONFIGS_DEFAULT, {
+            url: AVAILABILITY_URL + '?' + _serialize(searchOptions)
+          });
+
+      // Make request
+      request(requestConfigs, function(error, response, body) {
+        if (!error && response.statusCode == 200 && typeof successCallback === 'function') {
+          successCallback(error, response, JSON.parse(body));
+        } else if (error && typeof failureCallback === 'function') {
+          failureCallback(error, response);
         }
+      });
+    }
 
 
-        return {
-            search: search,
-            info: info,
-            availability: availability
-        };
-    })();
+    return {
+      search: search,
+      availability: availability
+    };
+  })();
 
 module.exports = Airbnb;

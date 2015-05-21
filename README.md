@@ -5,15 +5,16 @@ Use at your own risk. I'm not responsible for any misuse of this.
 
 ##Search listings
 Airbnb.search(options, successCallback, failureCallback)
-- **successCallback**(error, response, body)
-  - You might wanna do JSON.parse(body) for valid JSON object
-- **failureCallback**(error, response, body)
+- **successCallback**(error, response, hostings)
+- **failureCallback**(error, response)
 
-##Get listing(s) info
-  Airbnb.info([listings IDs], options).then()
+##Get hosting info
+  *Coming soon*
 
-##Get availabily for listing(s)
-  Airbnb.availability([listings IDs], options);
+##Get availabily for a hosting
+Airbnb.availability(hosting ID, options, successCallback, failureCallback)
+- **successCallback**(error, response, info)
+- **failureCallback**(error, response)
 
 ##License
 What license? This is probably gonna be struck down by Airbnb soon :"(
