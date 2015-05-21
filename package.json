@@ -1,0 +1,24 @@
+{
+  "name": "airapi",
+  "version": "0.0.1",
+  "description": "A JS wrapper for *unofficial* AirBnb API",
+  "author": "Si Pham (phamtrisi@gmail.com)",
+  "bin": {},
+  "scripts": {},
+  "main": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phamtrisi/airapi.git"
+  },
+  "bugs": {},
+  "keywords": [
+    "airbnb",
+    "api"
+  ],
+  "dependencies": {
+    "lodash": "^3.9.1",
+    "request": "*"
+  },
+  "devDependencies": {},
+  "license": "MIT"
+}
