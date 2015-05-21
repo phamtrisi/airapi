@@ -5,10 +5,9 @@ Use at your own risk. I'm not responsible for any misuse of this.
 
 ##Search listings
 Airbnb.search(options, successCallback, failureCallback)
-  successCallback(error, response, body)
-    You might wanna do JSON.parse(body) for valid JSON object
-  
-  failureCallback(error, response, body)
+- **successCallback**(error, response, body)
+  - You might wanna do JSON.parse(body) for valid JSON object
+- **failureCallback**(error, response, body)
 
 ##Get listing(s) info
   Airbnb.info([listings IDs], options).then()
