@@ -1,3 +1,13 @@
+/**
+ * Airbnb Node wrapper for unofficial API
+ * @author Si Pham <phamtrisi@gmail.com>
+ * 
+ * Support basic actions to interact with airbnb hostings
+ * - search() - Search for hostings given conditions
+ * - info() - Get info about a hosting
+ * - availability() - Get availability for a hosting
+ * - income() - Get estimate income a hosting generates, by month
+ */
 var request = require('request'),
   _ = require('lodash'),
   cheerio = require('cheerio'),
