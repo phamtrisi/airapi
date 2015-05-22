@@ -19,6 +19,7 @@ Airbnb.search({
  console.log(listings);
 });
 ```
+
 - Get availability in May and Jun for hosting with ID: 4569115
 ```javascript
 Airbnb.availability(4569115, {
@@ -30,6 +31,25 @@ Airbnb.availability(4569115, {
   console.log(info);
 });
 ```
+
+- Get info about hosting ID 4569115
+```javascript
+Airbnb.info(4569115, function(err, res, info) {
+  console.log(info);
+});
+```
+
+- Get estimate income for hosting ID 4569115, for Jan and Feb, 2015
+```javascript
+Airbnb.income(4569115, {
+  month: 1,
+  year: 2015,
+  count: 2
+}, function(income) {
+  console.log(income);
+});
+```
+
 - To run the example
 ```javascript
 git clone https://github.com/phamtrisi/airapi.git airapi
