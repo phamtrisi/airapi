@@ -1,5 +1,6 @@
 var request = require('request'),
   _ = require('lodash'),
+  cheerio = require('cheerio'),
   Airbnb = (function Airbnb() {
     var today = new Date(),
         tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000),
@@ -25,7 +26,8 @@ var request = require('request'),
         },
         AIRBNB_PREFIX = 'https://www.airbnb.com',
         SEARCH_URL = AIRBNB_PREFIX + '/search/search_results',
-        AVAILABILITY_URL = AIRBNB_PREFIX + '/api/v2/calendar_months';
+        AVAILABILITY_URL = AIRBNB_PREFIX + '/api/v2/calendar_months',
+        HOSTING_URL = AIRBNB_PREFIX + '/rooms';
 
     /**
      * HELPERS
@@ -33,8 +35,8 @@ var request = require('request'),
 
     /**
      * Serialize an object into a valid URL string
-     * @param  {[Object]} obj - Params object
-     * @return {[String]} - A valid encoded URL string
+     * @param  {Object} obj - Params object
+     * @return {String} - A valid encoded URL string
      */
     function _serialize(obj) {
       var params = [],
@@ -55,6 +57,10 @@ var request = require('request'),
       return params.join('&');
     }
 
+    /**
+     * Functions used in .filter and .reduce
+     */
+    
     function _filled(day) {
       return !day.available && day.type === 'reservation';
     }
@@ -75,6 +81,73 @@ var request = require('request'),
       return !day.available && day.type === 'busy' && day.subtype === 'host_busy';
     }
 
+    /**
+     * Return the first match in a collection given a predicate
+     * @param  {Array} collection - Array of objects to iterate on
+     * @param  {Function} predicate - Function to invoke on every element of the collection. Must return true or false
+     * @return {Object, undefined} - First item in collection that predicate() returns true on. If there's no match, returns undefined.
+     */
+    function _firstMatch(collection, predicate) {
+      var i = 0,
+          len = collection.length;
+
+      if (len === 0) return;
+
+      for (; i < len; i += 1) {
+        if (predicate(collection[i]) === true) {
+          return collection[i];
+        }
+      }
+
+      return;
+    }
+
+    /**
+     * Extract hosting info given a cheerio parsed HTML body
+     * @param  {cheerio parsed HTML body} parsedBody
+     * @return {Object} - Hosting info in JSON form
+     *
+     * info = {
+     *   title: {String} - Hosting title
+     *   truncatedDescription: {String} - Short description of the hosting
+     *   metaData: {Object, null} - Metadata found on airbnb hosting page
+     * }
+     */
+    function _extractInfo(parsedBody) {
+      var $ = parsedBody, 
+          title = $('title').text(), // Hosting title
+          truncatedDescription = $('meta[name=description]').attr('content'),
+          $metas = $('meta'),
+          // TODO Find a more robust way to pick out the meta tag that houses these info
+          $hostingInfoMeta = _firstMatch($metas, function($meta) {
+            // Meta tag needs to have 'attribs' and 'content' properties
+            if (!($meta.hasOwnProperty('attribs') && $meta.attribs.hasOwnProperty('content'))) {
+              return false;
+            }
+
+            var content = $meta.attribs.content;
+
+            try {
+              content = JSON.parse(content);
+              if (content.hasOwnProperty('locale') &&
+                  content.hasOwnProperty('hostingId')) {
+                return true;
+              }
+            }
+            catch(e) {
+              console.error(e);
+              return false;
+            }
+
+            return false;
+          });
+      
+      return {
+        title: title,
+        truncatedDescription: truncatedDescription,
+        metaData: $hostingInfoMeta? JSON.parse($hostingInfoMeta.attribs.content) : null
+      };
+    }
 
     /**
      * MAIN METHODS
@@ -223,14 +296,37 @@ var request = require('request'),
           failureCallback(err, res);
         }
       });
+    }
 
+    /**
+     * Get info for a particular hosting
+     * @param  {Number, String} hosting - Hosting ID
+     * @param  {Function} successCallback - Success callback to invoke
+     * @param  {Function} failureCallback - Failure callback to invoke
+     * @return {Void} - Hosting info is passed onto callbacks
+     */
+    function info(hosting, successCallback, failureCallback) {
+      var requestConfigs = _.assign({}, CONFIGS_DEFAULT, {
+            url: HOSTING_URL + '/' + hosting
+          }),
+          $;
+      
+      // Make request to parse hosting info
+      request(requestConfigs, function(error, response, body) {
+        if (!error && response.statusCode == 200 && typeof successCallback === 'function') {
+          successCallback(error, response, _extractInfo(cheerio.load(body)));
+        } else if (error && typeof failureCallback === 'function') {
+          failureCallback(error, response);
+        }
+      });
     }
 
     // Expose public methods
     return {
       search: search,
       availability: availability,
-      income: income
+      income: income,
+      info: info
     };
   })();
 

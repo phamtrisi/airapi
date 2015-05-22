@@ -1,15 +1,15 @@
 var Airbnb = require('./Airbnb');
 
-// Airbnb.search({
-//     location: 'Seattle, WA',
-//     checkin: '07/03/2015',
-//     checkout: '07/06/2015',
-//     guests: 2,
-//     page: 2,
-//     ib: true
-// }, function(err, res, listings) {
-//   console.log(listings);
-// });
+Airbnb.search({
+    location: 'Seattle, WA',
+    checkin: '07/03/2015',
+    checkout: '07/06/2015',
+    guests: 2,
+    page: 2,
+    ib: true
+}, function(err, res, listings) {
+  console.log(listings);
+});
 
 
 Airbnb.income(4944661, {
@@ -18,4 +18,8 @@ Airbnb.income(4944661, {
   count: 12
 }, function(income) {
   console.log(income);
+});
+
+Airbnb.info(5183938, function(err, res, info) {
+  console.log(info);
 });
