@@ -42,11 +42,18 @@ Airbnb.search(options, successCallback, failureCallback)
 - **failureCallback**(error, response)
 
 ##Get hosting info
-  *Coming soon*
+Airbnb.info(hostingId, successCallback, failureCallback)
+- **successCallback**(error, response, info)
+- **failureCallback**(error, response)
 
 ##Get availabily for a hosting
-Airbnb.availability(hosting ID, options, successCallback, failureCallback)
-- **successCallback**(error, response, info)
+Airbnb.availability(hostingId, options, successCallback, failureCallback)
+- **successCallback**(error, response, availabilityInfo)
+- **failureCallback**(error, response)
+
+##Get estimate income by month, for a hosting
+Airbnb.availability(hostingId, options, successCallback, failureCallback)
+- **successCallback**(error, response, estIncome)
 - **failureCallback**(error, response)
 
 ##License
