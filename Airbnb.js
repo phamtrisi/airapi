@@ -142,7 +142,7 @@ var request = require('request'),
      * @param  {[Object]} options         [description]
      * @param  {Function} successCallback(err, res, info) - Callback to invoke if successful 
      * @param  {Function} failureCallback(err, res) - Callback to invoke if failed 
-     * @return {[Void]} - Listing info is passed through callbacks
+     * @return {Void} - Listing info is passed through callbacks
      *
      * Available options
      * options = {
@@ -182,19 +182,26 @@ var request = require('request'),
       });
     }
 
-
+    /**
+     * Generate estimate income for a particular hosting
+     * @param  {Number, String} hosting - Hosting ID
+     * @param  {Object} options - Search options, similar to options for .availability()
+     * @param  {Function} successCallback - Callback to invoke when successfully calculating est income
+     * @param  {Function} failureCallback - Failure callback to invoke
+     * @return {Void} - Estimate income is passed onto callbacks
+     */
     function income(hosting, options, successCallback, failureCallback) {
-      var monthsIncome;
+      var estIncome;
 
-      availability(hosting, options, function success(err, res, info) {
+      availability(hosting, options, function success(err, res, availabilityInfo) {
         // Process data here
-        monthsIncome = info.calendar_months.map(function(thisMonth) {
+        estIncome = availabilityInfo.calendar_months.map(function(thisMonth) {
           var days = thisMonth.days,
               daysWithPrice = days.filter(_hasPrice),
               daysAvailable = days.filter(_available),
               daysHostBusy = days.filter(_hostBusy),
               daysReserved = days.filter(_filled),
-              avgPrice = daysWithPrice.reduce(_sumPrice, 0) / daysWithPrice.length;
+              avgPrice = daysWithPrice.length? daysWithPrice.reduce(_sumPrice, 0) / daysWithPrice.length: 0;
 
           return {
             month: thisMonth.month,
@@ -209,7 +216,7 @@ var request = require('request'),
         });
 
         if (typeof successCallback === 'function') {
-          successCallback(monthsIncome);
+          successCallback(estIncome);
         }
       }, function failure(err, res) {
         if (typeof failureCallback === 'function') {
@@ -219,7 +226,7 @@ var request = require('request'),
 
     }
 
-
+    // Expose public methods
     return {
       search: search,
       availability: availability,
