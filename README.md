@@ -72,7 +72,7 @@ Airbnb.availability(hostingId, options, successCallback, failureCallback)
 - **failureCallback**(error, response)
 
 ##Get estimate income by month, for a hosting
-Airbnb.availability(hostingId, options, successCallback, failureCallback)
+Airbnb.income(hostingId, options, successCallback, failureCallback)
 - **successCallback**(error, response, estIncome)
 - **failureCallback**(error, response)
 
