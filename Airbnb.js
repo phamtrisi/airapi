@@ -2,30 +2,30 @@ var request = require('request'),
   _ = require('lodash'),
   Airbnb = (function Airbnb() {
     var today = new Date(),
-      tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000),
-      SEARCH_DEFAULT = {
-        guests: 1,
-        checkin: [today.getMonth() + 1, today.getDate(), today.getFullYear()].join('/'), // today
-        checkout: [tomorrow.getMonth() + 1, tomorrow.getDate(), tomorrow.getFullYear()].join('/'), // tomorrow
-      },
-      CONFIGS_DEFAULT = {
-        headers: {
-          'User-Agent': 'request'
-        }
-      },
-      API_KEY = 'd306zoyjsyarp7ifhu67rjxn52tv0t20',
-      AVAILABILITY_DEFAULT = {
-        key: API_KEY,
-        currency: 'USD',
-        locale: 'en',
-        month: today.getMonth() + 1,
-        year: today.getFullYear(),
-        count: 3, // Get 3 months of availabilities
-        _format: 'with_conditions'
-      },
-      AIRBNB_PREFIX = 'https://www.airbnb.com',
-      SEARCH_URL = AIRBNB_PREFIX + '/search/search_results',
-      AVAILABILITY_URL = AIRBNB_PREFIX + '/api/v2/calendar_months';
+        tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000),
+        SEARCH_DEFAULT = {
+          guests: 1,
+          checkin: [today.getMonth() + 1, today.getDate(), today.getFullYear()].join('/'), // today
+          checkout: [tomorrow.getMonth() + 1, tomorrow.getDate(), tomorrow.getFullYear()].join('/'), // tomorrow
+        },
+        CONFIGS_DEFAULT = {
+          headers: {
+            'User-Agent': 'request'
+          }
+        },
+        API_KEY = 'd306zoyjsyarp7ifhu67rjxn52tv0t20',
+        AVAILABILITY_DEFAULT = {
+          key: API_KEY,
+          currency: 'USD',
+          locale: 'en',
+          month: today.getMonth() + 1,
+          year: today.getFullYear(),
+          count: 3, // Get 3 months of availabilities
+          _format: 'with_conditions'
+        },
+        AIRBNB_PREFIX = 'https://www.airbnb.com',
+        SEARCH_URL = AIRBNB_PREFIX + '/search/search_results',
+        AVAILABILITY_URL = AIRBNB_PREFIX + '/api/v2/calendar_months';
 
     /**
      * HELPERS
@@ -55,7 +55,31 @@ var request = require('request'),
       return params.join('&');
     }
 
+    function _filled(day) {
+      return !day.available && day.type === 'reservation';
+    }
 
+    function _hasPrice(day) {
+      return day.price !== null;
+    }
+
+    function _sumPrice(sum, day) {
+      return sum + day.price.local_price;
+    }
+
+    function _available(day) {
+      return day.available;
+    }
+
+    function _hostBusy(day) {
+      return !day.available && day.type === 'busy' && day.subtype === 'host_busy';
+    }
+
+
+    /**
+     * MAIN METHODS
+     */
+    
     /**
      * Search hostings
      * @param  {Object} options - Search options
@@ -159,9 +183,47 @@ var request = require('request'),
     }
 
 
+    function income(hosting, options, successCallback, failureCallback) {
+      var monthsIncome;
+
+      availability(hosting, options, function success(err, res, info) {
+        // Process data here
+        monthsIncome = info.calendar_months.map(function(thisMonth) {
+          var days = thisMonth.days,
+              daysWithPrice = days.filter(_hasPrice),
+              daysAvailable = days.filter(_available),
+              daysHostBusy = days.filter(_hostBusy),
+              daysReserved = days.filter(_filled),
+              avgPrice = daysWithPrice.reduce(_sumPrice, 0) / daysWithPrice.length;
+
+          return {
+            month: thisMonth.month,
+            year: thisMonth.year,
+            daysAvailable: daysAvailable.length,
+            daysHostBusy: daysHostBusy.length,
+            daysReserved: daysReserved.length,
+            avgPrice: avgPrice,
+            estIncome: avgPrice * daysReserved.length,
+            estOpportunityIncome: avgPrice * daysAvailable.length
+          };
+        });
+
+        if (typeof successCallback === 'function') {
+          successCallback(monthsIncome);
+        }
+      }, function failure(err, res) {
+        if (typeof failureCallback === 'function') {
+          failureCallback(err, res);
+        }
+      });
+
+    }
+
+
     return {
       search: search,
-      availability: availability
+      availability: availability,
+      income: income
     };
   })();
 
