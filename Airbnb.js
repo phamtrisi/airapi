@@ -352,7 +352,7 @@ var request = require('request'),
      *   role: {String}, Either 'guest' or 'host'
      * }
      */
-    function userReviews(user, options, successCallback, failureCallback) {
+    function reviews(user, options, successCallback, failureCallback) {
       var searchOptions = _.assign({}, USER_REVIEWS_DEFAULT, options),
           requestConfigs = _.assign({}, CONFIGS_DEFAULT, {
             url: USER_REVIEWS_URL + '/' + user + '?' + _serialize(searchOptions)
@@ -385,7 +385,7 @@ var request = require('request'),
       availability: availability,
       income: income,
       info: info,
-      userReviews: userReviews
+      reviews: reviews
     };
   })();
 
