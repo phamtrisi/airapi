@@ -34,11 +34,16 @@ var request = require('request'),
           count: 3, // Get 3 months of availabilities
           _format: 'with_conditions'
         },
+        USER_REVIEWS_DEFAULT = {
+          page: 1,
+          role: 'host'
+        },
         AIRBNB_PREFIX = 'https://www.airbnb.com',
         SEARCH_URL = AIRBNB_PREFIX + '/search/search_results',
         AVAILABILITY_URL = AIRBNB_PREFIX + '/api/v2/calendar_months',
         HOSTING_URL = AIRBNB_PREFIX + '/rooms',
-        HOSTING_INFO_URL = AIRBNB_PREFIX + '/api/v1/listings';
+        HOSTING_INFO_URL = AIRBNB_PREFIX + '/api/v1/listings',
+        USER_REVIEWS_URL = AIRBNB_PREFIX + '/users/review_page';
 
     /**
      * HELPERS
@@ -333,12 +338,54 @@ var request = require('request'),
       });
     }
 
+
+    /**
+     * Get a list of textual reviews for a given user, as a host or a guest
+     * @param  {Number, String} user - User ID
+     * @param  {Object} options - Options to specify page and role of reviews
+     * @param  {Function} successCallback
+     * @param  {Function} failureCallback
+     * @return {Void} - List of reviews is passed onto callbacks
+     *
+     * options = {
+     *   page: {Number}
+     *   role: {String}, Either 'guest' or 'host'
+     * }
+     */
+    function userReviews(user, options, successCallback, failureCallback) {
+      var searchOptions = _.assign({}, USER_REVIEWS_DEFAULT, options),
+          requestConfigs = _.assign({}, CONFIGS_DEFAULT, {
+            url: USER_REVIEWS_URL + '/' + user + '?' + _serialize(searchOptions)
+          }),
+          reviews = [], 
+          $;
+
+      // Make request to get user reviews
+      request(requestConfigs, function(error, response, body) {
+        if (!error && response.statusCode == 200 && typeof successCallback === 'function') {
+          // Since the response is in HTML, parse with cheerio
+          $ = cheerio.load(JSON.parse(body).review_content);
+          
+          // Construct list of textual reviews
+          $('.comment-container .expandable-content p').each(function(idx, $review) {
+            reviews.push($review.children[0].data);
+          });
+
+          successCallback(error, response, reviews);
+        } else if (error && typeof failureCallback === 'function') {
+          failureCallback(error, response);
+        }
+      });
+    }
+
+
     // Expose public methods
     return {
       search: search,
       availability: availability,
       income: income,
-      info: info
+      info: info,
+      userReviews: userReviews
     };
   })();
 
