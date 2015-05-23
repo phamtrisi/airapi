@@ -50,6 +50,26 @@ Airbnb.income(4569115, {
 });
 ```
 
+- Get user reviews for user ID 4586440, as a host
+```javascript
+Airbnb.reviews(4586440, {
+  page: 1,
+  role: 'host'
+}, function(err, res, reviews) {
+  console.log(reviews);
+});
+```
+
+- Get user reviews for user ID 4586440, as a guest
+```javascript
+Airbnb.reviews(4586440, {
+  page: 1,
+  role: 'guest'
+}, function(err, res, reviews) {
+  console.log(reviews);
+});
+```
+
 - To run the example
 ```javascript
 git clone https://github.com/phamtrisi/airapi.git airapi
@@ -74,6 +94,11 @@ Airbnb.availability(hostingId, options, successCallback, failureCallback)
 ##Get estimate income by month, for a hosting
 Airbnb.income(hostingId, options, successCallback, failureCallback)
 - **successCallback**(error, response, estIncome)
+- **failureCallback**(error, response)
+
+##Get reviews for a user
+Airbnb.reviews(userID, options, successCallback, failureCallback)
+- **successCallback**(error, response, reviews[])
 - **failureCallback**(error, response)
 
 ##License
