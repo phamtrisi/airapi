@@ -20,6 +20,6 @@ Airbnb.income(4944661, {
   console.log(income);
 });
 
-Airbnb.info(5183938, function(err, res, info) {
+Airbnb.info('4882295', function(err, res, info) {
   console.log(info);
 });

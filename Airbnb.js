@@ -21,7 +21,7 @@ var request = require('request'),
         },
         CONFIGS_DEFAULT = {
           headers: {
-            'User-Agent': 'request'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
           }
         },
         API_KEY = 'd306zoyjsyarp7ifhu67rjxn52tv0t20',
@@ -37,7 +37,8 @@ var request = require('request'),
         AIRBNB_PREFIX = 'https://www.airbnb.com',
         SEARCH_URL = AIRBNB_PREFIX + '/search/search_results',
         AVAILABILITY_URL = AIRBNB_PREFIX + '/api/v2/calendar_months',
-        HOSTING_URL = AIRBNB_PREFIX + '/rooms';
+        HOSTING_URL = AIRBNB_PREFIX + '/rooms',
+        HOSTING_INFO_URL = AIRBNB_PREFIX + '/api/v1/listings';
 
     /**
      * HELPERS
@@ -317,14 +318,15 @@ var request = require('request'),
      */
     function info(hosting, successCallback, failureCallback) {
       var requestConfigs = _.assign({}, CONFIGS_DEFAULT, {
-            url: HOSTING_URL + '/' + hosting
-          }),
-          $;
-      
+            url: HOSTING_INFO_URL + '/' + hosting + '?' + _serialize({
+              key: API_KEY
+            })
+          });
+
       // Make request to parse hosting info
       request(requestConfigs, function(error, response, body) {
         if (!error && response.statusCode == 200 && typeof successCallback === 'function') {
-          successCallback(error, response, _extractInfo(cheerio.load(body)));
+          successCallback(error, response, JSON.parse(body));
         } else if (error && typeof failureCallback === 'function') {
           failureCallback(error, response);
         }
