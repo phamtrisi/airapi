@@ -10,19 +10,19 @@
  * - review() - Get reviews for a given user, as host or guest
  */
 var request = require('request'),
-  _ = require('lodash'),
-  cheerio = require('cheerio');
+  _         = require('lodash'),
+  cheerio   = require('cheerio');
 
-var Airbnb = (function Airbnb() {
-  var today = new Date(),
-    tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000),
-    API_KEY = 'd306zoyjsyarp7ifhu67rjxn52tv0t20', // This was obtained by tracing back airbnb XHR, might be revoked anytime. TODO Find a more reliable key
-    DEFAULT_REQUEST_CONFIGS = {
+var Airbnb  = (function Airbnb() {
+  var today                     = new Date(),
+    tomorrow                    = new Date(today.getTime() + 24 * 60 * 60 * 1000),
+    API_KEY                     = 'd306zoyjsyarp7ifhu67rjxn52tv0t20', // This was obtained by tracing back airbnb XHR, might be revoked anytime. TODO Find a more reliable key
+    DEFAULT_REQUEST_CONFIGS     = {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
       }
     },
-    DEFAULT_REQUEST_PARAMS = {
+    DEFAULT_REQUEST_PARAMS      = {
       key: API_KEY  
     },
     DEFAULT_AVAILABILITY_PARAMS = _.assign({}, DEFAULT_REQUEST_PARAMS, {
@@ -33,15 +33,15 @@ var Airbnb = (function Airbnb() {
       count: 3,
       _format: 'with_conditions'
     }),
-    DEFAULT_REVIEWS_PARAMS = _.assign({}, DEFAULT_REQUEST_PARAMS, {
+    DEFAULT_REVIEWS_PARAMS      = _.assign({}, DEFAULT_REQUEST_PARAMS, {
       page: 1,
       role: 'host'
     }),
-    AIRBNB_PREFIX = 'https://www.airbnb.com',
-    SEARCH_URL = AIRBNB_PREFIX + '/search/search_results',
-    AVAILABILITY_URL = AIRBNB_PREFIX + '/api/v2/calendar_months',
-    HOSTING_INFO_URL = AIRBNB_PREFIX + '/api/v1/listings',
-    USER_REVIEWS_URL = AIRBNB_PREFIX + '/users/review_page';
+    AIRBNB_PREFIX               = 'https://www.airbnb.com',
+    SEARCH_URL                  = AIRBNB_PREFIX + '/search/search_results',
+    AVAILABILITY_URL            = AIRBNB_PREFIX + '/api/v2/calendar_months',
+    HOSTING_INFO_URL            = AIRBNB_PREFIX + '/api/v1/listings',
+    USER_REVIEWS_URL            = AIRBNB_PREFIX + '/users/review_page';
 
   /**
    * HELPERS
@@ -53,7 +53,7 @@ var Airbnb = (function Airbnb() {
    * @return {String} - A valid encoded URL string
    */
   function _serialize(obj) {
-    var params = [],
+    var params        = [],
       encodedBrackets = encodeURIComponent('[]');
 
     _.forOwn(obj, function(value, key) {
@@ -128,12 +128,12 @@ var Airbnb = (function Airbnb() {
    * }
    */
   function _extractInfo(parsedBody) {
-    var $ = parsedBody,
-      title = $('title').text(), // Hosting title
+    var $                  = parsedBody,
+      title                = $('title').text(), // Hosting title
       truncatedDescription = $('meta[name=description]').attr('content'),
-      $metas = $('meta'),
+      $metas               = $('meta'),
       // TODO Find a more robust way to pick out the meta tag that houses these info
-      $hostingInfoMeta = _firstMatch($metas, function($meta) {
+      $hostingInfoMeta     = _firstMatch($metas, function($meta) {
         // Meta tag needs to have 'attribs' and 'content' properties
         if(!($meta.hasOwnProperty('attribs') && $meta.attribs.hasOwnProperty('content'))) {
           return false;
@@ -248,7 +248,7 @@ var Airbnb = (function Airbnb() {
     var searchOptions = _.assign({
         listing_id: hosting
       }, DEFAULT_AVAILABILITY_PARAMS, options),
-      requestConfigs = _.assign({}, DEFAULT_REQUEST_CONFIGS, {
+      requestConfigs  = _.assign({}, DEFAULT_REQUEST_CONFIGS, {
         url: AVAILABILITY_URL + '?' + _serialize(searchOptions)
       });
 
@@ -271,17 +271,15 @@ var Airbnb = (function Airbnb() {
    * @return {Void} - Estimate income is passed onto callbacks
    */
   function income(hosting, options, successCallback, failureCallback) {
-    var estIncome;
-
     availability(hosting, options, function success(err, res, availabilityInfo) {
       // Process data here
-      estIncome = availabilityInfo.calendar_months.map(function(thisMonth) {
-        var days = thisMonth.days,
+      var estIncome = availabilityInfo.calendar_months.map(function(thisMonth) {
+        var days        = thisMonth.days,
           daysWithPrice = days.filter(_hasPrice),
           daysAvailable = days.filter(_available),
-          daysHostBusy = days.filter(_hostBusy),
-          daysReserved = days.filter(_filled),
-          avgPrice = daysWithPrice.length ? daysWithPrice.reduce(_sumPrice, 0) / daysWithPrice.length : 0;
+          daysHostBusy  = days.filter(_hostBusy),
+          daysReserved  = days.filter(_filled),
+          avgPrice      = daysWithPrice.length ? daysWithPrice.reduce(_sumPrice, 0) / daysWithPrice.length : 0;
 
         return {
           month: thisMonth.month,
@@ -345,10 +343,10 @@ var Airbnb = (function Airbnb() {
    */
   function reviews(user, options, successCallback, failureCallback) {
     var searchOptions = _.assign({}, DEFAULT_REVIEWS_PARAMS, options),
-      requestConfigs = _.assign({}, DEFAULT_REQUEST_CONFIGS, {
+      requestConfigs  = _.assign({}, DEFAULT_REQUEST_CONFIGS, {
         url: USER_REVIEWS_URL + '/' + user + '?' + _serialize(searchOptions)
       }),
-      reviews = [],
+      reviews         = [],
       $;
 
     // Make request to get user reviews
