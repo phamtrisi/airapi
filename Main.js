@@ -27,7 +27,7 @@ Airbnb.info('4882295', function(err, res, info) {
 });
 
 // User reviews
-Airbnb.reviews(4586440, {
+Airbnb.reviews(266101, {
   role: 'host'
 }, function(err, res, reviews) {
   console.log(reviews);
