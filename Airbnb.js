@@ -7,21 +7,18 @@
  * - info() - Get info about a hosting
  * - availability() - Get availability for a hosting
  * - income() - Get estimate income a hosting generates, by month
- * - review() - Get reviews for a given user, as host or guest
+ * - reviews() - Get reviews for a given user, as host or guest
  */
 var request = require('request'),
   _         = require('lodash'),
-  cheerio   = require('cheerio');
+  cheerio   = require('cheerio'),
+  secrets   = require('./_secrets');
 
 var Airbnb  = (function Airbnb() {
   var today                     = new Date(),
     tomorrow                    = new Date(today.getTime() + 24 * 60 * 60 * 1000),
-    API_KEY                     = 'd306zoyjsyarp7ifhu67rjxn52tv0t20', // This was obtained by tracing back airbnb XHR, might be revoked anytime. TODO Find a more reliable key
-    DEFAULT_REQUEST_CONFIGS     = {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
-      }
-    },
+    API_KEY                     = secrets.API_KEY,
+    DEFAULT_REQUEST_CONFIGS     = secrets.DEFAULT_REQUEST_CONFIGS,
     DEFAULT_REQUEST_PARAMS      = {
       key: API_KEY  
     },
