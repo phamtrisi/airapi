@@ -1,5 +1,5 @@
 /**
- * Airbnb Node wrapper for unofficial API
+ * airbnb Node wrapper for unofficial API
  * @author Si Pham <phamtrisi@gmail.com>
  * 
  * Support basic actions to interact with airbnb hostings
@@ -14,7 +14,7 @@ var request = require('request'),
   cheerio   = require('cheerio'),
   secrets   = require('./_secrets');
 
-var Airbnb  = (function Airbnb() {
+var airbnb  = (function airbnb() {
   var today                     = new Date(),
     tomorrow                    = new Date(today.getTime() + 24 * 60 * 60 * 1000),
     API_KEY                     = secrets.API_KEY,
@@ -382,4 +382,4 @@ var Airbnb  = (function Airbnb() {
   };
 })();
 
-module.exports = Airbnb;
+module.exports = airbnb;
