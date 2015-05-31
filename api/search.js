@@ -2,7 +2,8 @@ var request = require('request'),
   _ = require('lodash'),
   secrets = require('../_secrets'),
   configs = require('../configs'),
-  serialize = require('../helpers/serialize');
+  serialize = require('../helpers/serialize'),
+  Hosting = require('../models/Hosting');
 
 /**
  * Search hostings
@@ -42,13 +43,24 @@ function search(options, successCallback, failureCallback) {
   var requestConfigs = _.assign({}, configs.DEFAULT_REQUEST_CONFIGS, {
     url: configs.SEARCH_URL + '?' + serialize(options)
   }),
-    hostings = [];
+    hostings = [],
+    searchResp;
 
   // Make request
   request(requestConfigs, function(err, res, body) {
     if (!err && res.statusCode == 200 && _.isFunction(successCallback)) {
-      body = JSON.parse(body);
-      successCallback(body);
+      searchResp = JSON.parse(body);
+      
+      try {
+        hostings = searchResp.property_ids.map(function(propertyId) {
+          return new Hosting(propertyId);
+        });
+      }
+      catch(err) {
+        hostings = [];
+      }
+
+      successCallback(hostings, searchResp);
     } else if (err && _.isFunction(failureCallback)) {
       failureCallback(err, res);
     }

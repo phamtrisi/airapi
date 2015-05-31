@@ -1,7 +1,9 @@
-var airbnb = require('../api'),
-  _ = require('lodash');
+var api = require('../api'),
+  _ = require('lodash'),
+  info = require('../api/info');
 
-var Hosting = (function(id, configs) {
+
+var Hosting = (function() {
 
   function Hosting(id, configs) {
     // Private vars
@@ -39,7 +41,7 @@ var Hosting = (function(id, configs) {
     // Only make a new call if we haven't OR the memoization has expired   
     if (!hosting.info ||
       (now > hosting.infoLastUpdated + hosting.getMemoizeDuration())) {
-      airbnb.info(hosting.getId(), function success(hostingInfo) {
+      info(hosting.getId(), function success(hostingInfo) {
         // Update info for this hosting
         hosting.info = hostingInfo;
 
@@ -72,7 +74,7 @@ var Hosting = (function(id, configs) {
     // Only make a new call if we haven't OR the memoization has expired   
     if (!hosting.availability ||
       (now > hosting.availabilityLastUpdated + hosting.getMemoizeDuration())) {
-      airbnb.availability(hosting.getId(), options, function success(hostingAvailability) {
+      api.availability(hosting.getId(), options, function success(hostingAvailability) {
         // Update availability for this hosting
         hosting.availability = hostingAvailability;
 
@@ -105,7 +107,7 @@ var Hosting = (function(id, configs) {
     function _getReviews() {
       if (!hosting.reviews ||
           (now > hosting.reviewsLastUpdated + hosting.getMemoizeDuration())) {
-        airbnb.reviews(hosting.info.listing.user_id, options, function success(hostingReviews) {
+        api.reviews(hosting.info.listing.user_id, options, function success(hostingReviews) {
           // Update reviews for this hosting
           hosting.reviews = hostingReviews;
 

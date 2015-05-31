@@ -19,11 +19,7 @@
 // });
 // 
 // 
-var search = require('./api/search'),
-    info = require('./api/info'),
-    availability = require('./api/availability'),
-    reviews = require('./api/reviews'),
-    income = require('./api/income');
+var airbnb = require('./airbnb');
 
 // reviews(266101, {
 //   role: 'host'
@@ -31,23 +27,27 @@ var search = require('./api/search'),
 //   console.log(reviews);
 // })
 
-availability(4944661, {
-  month: 7,
-  count: 3,
-  year: 2015
-}, function(info) {
-  console.log(income(info));
-});
-
-// search({
-//   location: 'New York, NY',
-//   checkin: '07/04/2015',
-//   checkout: '07/06/2015',
-//   guests: 2,
-//   page: 1
-// }, function(hostings) {
-//   console.log(hostings);
-// }, function(err, res) {
-//   console.log('Error: ', err);
+// availability(4944661, {
+//   month: 7,
+//   count: 3,
+//   year: 2015
+// }, function(info) {
+//   console.log(income(info));
 // });
+
+airbnb.search({
+  location: 'New York, NY',
+  checkin: '07/04/2015',
+  checkout: '07/06/2015',
+  guests: 2,
+  page: 1
+}, function(hostings, resp) {
+  hostings.forEach(function(hosting) {
+    hosting.getInfo(function(info) {
+      console.log(info);
+    });
+  });
+}, function(err, res) {
+  console.log('Error: ', err);
+});
 
