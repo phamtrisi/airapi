@@ -16,7 +16,7 @@
     "api"
   ],
   "dependencies": {
-    "lodash": "^3.9.1",
+    "lodash": "*",
     "request": "*",
     "cheerio": "*"
   },
