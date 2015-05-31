@@ -1,6 +1,8 @@
-var api = require('../api'),
-  _ = require('lodash'),
-  info = require('../api/info');
+var _ = require('lodash'),
+  info = require('../api/info'),
+  availability = require('../api/availability'),
+  reviews = require('../api/reviews'),
+  income = require('../api/income');
 
 
 var Hosting = (function() {
@@ -74,7 +76,7 @@ var Hosting = (function() {
     // Only make a new call if we haven't OR the memoization has expired   
     if (!hosting.availability ||
       (now > hosting.availabilityLastUpdated + hosting.getMemoizeDuration())) {
-      api.availability(hosting.getId(), options, function success(hostingAvailability) {
+      availability(hosting.getId(), options, function success(hostingAvailability) {
         // Update availability for this hosting
         hosting.availability = hostingAvailability;
 
@@ -107,7 +109,7 @@ var Hosting = (function() {
     function _getReviews() {
       if (!hosting.reviews ||
           (now > hosting.reviewsLastUpdated + hosting.getMemoizeDuration())) {
-        api.reviews(hosting.info.listing.user_id, options, function success(hostingReviews) {
+        reviews(hosting.info.listing.user_id, options, function success(hostingReviews) {
           // Update reviews for this hosting
           hosting.reviews = hostingReviews;
 
