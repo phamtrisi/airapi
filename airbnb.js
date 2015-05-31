@@ -3,5 +3,9 @@ var api = require('./api'),
 
 module.exports = {
   search: api.search,
+  info: api.info,
+  reviews: api.reviews,
+  income: api.income,
+  availability: api.availability,
   Hosting: models.Hosting
 };
