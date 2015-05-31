@@ -26,7 +26,7 @@ airbnb.search({
 ```javascript
 airbnb.availability(4569115, {
  currency: 'USD',
- month: 7,
+ month: 5,
  year: 2015,
  count: 2
 }, function(availability) {
@@ -45,7 +45,7 @@ airbnb.info(4569115, function(info) {
 ```javascript
 airbnb.availability(4569115, {
  currency: 'USD',
- month: 7,
+ month: 1,
  year: 2015,
  count: 2
 }, function(availability) {
