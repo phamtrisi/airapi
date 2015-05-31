@@ -17,8 +17,8 @@ airbnb.search({
  guests: 2,
  page: 2,
  ib: true
-}, function(err, res, listings) {
- console.log(listings);
+}, function(hostings, response) {
+ console.log(hostings);
 });
 ```
 
@@ -29,26 +29,27 @@ airbnb.availability(4569115, {
  month: 7,
  year: 2015,
  count: 2
-}, function(err, res, info) {
-  console.log(info);
+}, function(availability) {
+  console.log(availability);
 });
 ```
 
 - Get info about hosting ID 4569115
 ```javascript
-airbnb.info(4569115, function(err, res, info) {
+airbnb.info(4569115, function(info) {
   console.log(info);
 });
 ```
 
 - Get estimate income for hosting ID 4569115, for Jan and Feb, 2015
 ```javascript
-airbnb.income(4569115, {
-  month: 1,
-  year: 2015,
-  count: 2
-}, function(income) {
-  console.log(income);
+airbnb.availability(4569115, {
+ currency: 'USD',
+ month: 7,
+ year: 2015,
+ count: 2
+}, function(availability) {
+  console.log(airbnb.income(availability));
 });
 ```
 
@@ -105,27 +106,25 @@ hosting.getReviews({
 
 ##Search listings
 airbnb.search(options, successCallback, failureCallback)
-- **successCallback**(error, response, hostings)
+- **successCallback**(hostings, responseJSON)
 - **failureCallback**(error, response)
 
 ##Get hosting info
 airbnb.info(hostingId, successCallback, failureCallback)
-- **successCallback**(error, response, info)
+- **successCallback**(info)
 - **failureCallback**(error, response)
 
 ##Get availabily for a hosting
 airbnb.availability(hostingId, options, successCallback, failureCallback)
-- **successCallback**(error, response, availabilityInfo)
+- **successCallback**(availabilityInfo)
 - **failureCallback**(error, response)
 
 ##Get estimate income by month, for a hosting
-airbnb.income(hostingId, options, successCallback, failureCallback)
-- **successCallback**(error, response, estIncome)
-- **failureCallback**(error, response)
+airbnb.income(availability)
 
 ##Get reviews for a user
 airbnb.reviews(userID, options, successCallback, failureCallback)
-- **successCallback**(error, response, reviews[])
+- **successCallback**(reviews[])
 - **failureCallback**(error, response)
 
 ##License
