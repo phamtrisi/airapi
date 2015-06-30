@@ -68,7 +68,7 @@ airbnb.reviews(4586440, {
 airbnb.reviews(4586440, {
   page: 1,
   role: 'guest'
-}, function(err, res, reviews) {
+}, function(reviews) {
   console.log(reviews);
 });
 ```
