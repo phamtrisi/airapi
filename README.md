@@ -76,7 +76,7 @@ airbnb.reviews(4586440, {
 - To run the example
 ```javascript
 git clone https://github.com/phamtrisi/airapi.git airapi
-cd airapi && node Main.js
+cd airapi && npm install && node example.js
 ```
 
 ###Using the Hosting object model
