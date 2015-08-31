@@ -8,8 +8,8 @@ I'm not responsible for any misuse of this.
 
 ##How to
 
-Include the library in your app
 ```javascript
+// Include the library in your app
 var airbnb = require('airbnb');
 
 // Search
@@ -28,6 +28,7 @@ airbnb.income(hostingAvailability);
 airbnb.review(hostingId, configs, callback);
 ```
 
+##API
 ###Search
 ```javascript
 airbnb.search({
@@ -124,29 +125,5 @@ hosting.getReviews({
 });
 ```
 
-##Search listings
-airbnb.search(options, successCallback, failureCallback)
-- **successCallback**(hostings, responseJSON)
-- **failureCallback**(error, response)
-
-##Get hosting info
-airbnb.info(hostingId, successCallback, failureCallback)
-- **successCallback**(info)
-- **failureCallback**(error, response)
-
-##Get availabily for a hosting
-airbnb.availability(hostingId, options, successCallback, failureCallback)
-- **successCallback**(availabilityInfo)
-- **failureCallback**(error, response)
-
-##Get estimate income by month, for a hosting
-airbnb.income(availability)
-
-##Get reviews for a user
-airbnb.reviews(userID, options, successCallback, failureCallback)
-- **successCallback**(reviews[])
-- **failureCallback**(error, response)
-
 ##License
-What license? I'd be happy if it doesn't get struck down.
-Use at your own risk. You've been warned.
+Free to use. Please star if this is helpful to you.
