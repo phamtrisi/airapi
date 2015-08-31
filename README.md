@@ -43,6 +43,29 @@ airbnb.search({
   // response - the original HTTP request response
 });
 ```
+- search options 
+```
+{
+ *   checkin: {String},
+ *   checkout: {String},
+ *   guests: {Number},
+ *   page: {Number},
+ *   location: {String}, e.g: 'New York, NY' or 'Seattle, WA'
+ *   price_min: {Number},
+ *   price_max: {Number},
+ *   min_bedrooms: {Number},
+ *   min_bathrooms: {Number},
+ *   min_beds: {Number},
+ *   superhost: {Boolean},
+ *   hosting_amenities: {Array of id}, e.g: [1,4]
+ *   property_type_id: {Array of id}, e.g: [1]
+ *   languages: {Array of id}, e.g: [1,64]
+ *   keywords: {String}, e.g: 'ocean,view,balcony'
+ *   room_types: {Array}, e.g: ['Entire home/apt', 'Private room', 'Shared room']
+ *   ib: {Boolean}, instant-book,
+ *   neighborhoods: {Array}, e.g: ['Belltown', 'Queen Anne']
+ * }
+```
 ###Hosting availability
 ```javascript
 airbnb.availability(4569115, {
