@@ -8,10 +8,13 @@ I'm not responsible for any misuse of this.
 
 ##How to
 
-###Search
+Include the library in your app
 ```javascript
 var airbnb = require('airbnb');
+```
 
+###Search
+```javascript
 airbnb.search({
  location: 'Seattle, WA',
  checkin: '07/03/2015',
@@ -20,7 +23,8 @@ airbnb.search({
  page: 2,
  ib: true
 }, function(hostings, response) {
- console.log(hostings);
+  // hosting - the list of hostings objects returned. See documentation for Hosting object below.
+  // response - the original HTTP request response
 });
 ```
 ###Hosting availability
@@ -31,11 +35,11 @@ airbnb.availability(4569115, {
  year: 2015,
  count: 2
 }, function(availability) {
-  console.log(availability);
+  // availability - hosting's calendar for given months
 });
 ```
 
-- Get info about hosting ID 4569115
+###Hosting information
 ```javascript
 airbnb.info(4569115, function(info) {
   console.log(info);
