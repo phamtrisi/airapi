@@ -1,12 +1,14 @@
-#AirAPI
-AirAPI is a Node wrapper for AirBnb *unofficial* API.
-AirBnb does not provide a public API, so this might/might not violate their policies.
-Use at your own risk. I'm not responsible for any misuse of this.
+AirAPI
+==============
 
-##Usage
+AirAPI is a convenient NodeJS wrapper for Airbnb's API endpoints.
+This is not affiliated nor endorsed by Airbnb.
+Airbnb does not provide public access to their API, so use at your own risk. 
+I'm not responsible for any misuse of this.
 
-###Using the API methods separately
-- Search instant-bookable hostings in Seattle, July 3-6, for 2 guests
+##How to
+
+###Search
 ```javascript
 var airbnb = require('airbnb');
 
@@ -21,8 +23,7 @@ airbnb.search({
  console.log(hostings);
 });
 ```
-
-- Get availability in May and Jun for hosting with ID: 4569115
+###Hosting availability
 ```javascript
 airbnb.availability(4569115, {
  currency: 'USD',
@@ -41,7 +42,7 @@ airbnb.info(4569115, function(info) {
 });
 ```
 
-- Get estimate income for hosting ID 4569115, for Jan and Feb, 2015
+###Hosting estimate income
 ```javascript
 airbnb.availability(4569115, {
  currency: 'USD',
@@ -53,7 +54,7 @@ airbnb.availability(4569115, {
 });
 ```
 
-- Get user reviews for user ID 4586440, as a host
+###Hosting reviews
 ```javascript
 airbnb.reviews(4586440, {
   page: 1,
