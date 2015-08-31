@@ -11,6 +11,21 @@ I'm not responsible for any misuse of this.
 Include the library in your app
 ```javascript
 var airbnb = require('airbnb');
+
+// Search
+airbnb.search(configs, callback);
+
+// Get calendar
+airbnb.availability(configs, callback);
+
+// Get hosting information
+airbnb.info(hostingId, callback);
+
+// Get hosting estimate income
+airbnb.income(hostingAvailability);
+
+// Get hosting reviews
+airbnb.review(hostingId, configs, callback);
 ```
 
 ###Search
