@@ -21,14 +21,15 @@ airbnb.getCalendar(options);
 // Get hosting information
 airbnb.getInfo(hostingId);
 
-// Get hosting estimate income, given availability, which can be retrieved using `airbnb.getCalendar()` above
+// Get hosting estimate income, given availability, 
+// which can be retrieved using `airbnb.getCalendar()` above
 airbnb.getEstIncome(hostingAvailability);
 
 // Get hosting reviews
 airbnb.getReviews(userId, options);
 ```
 
-**NOTE: All of these API endpoints return a promise.**
+**NOTE: All of these API endpoints, except for `getEstIncome` return a promise.**
 
 ##Examples
 ###Search
@@ -48,7 +49,7 @@ airbnb.search({
 ```
 
 Possible search options 
-```json
+```
 {
   checkin: {String}, e.g: '04/30/2015'
   checkout: {String},
