@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>AirAPI by phamtrisi</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>AirAPI</h1>
+          <h2>*Unofficial* JS wrapper for AirBnb API</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/phamtrisi/airapi/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/phamtrisi/airapi/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/phamtrisi/airapi" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>
+<a id="airapi" class="anchor" href="#airapi" aria-hidden="true"><span class="octicon octicon-link"></span></a>AirAPI</h1>
+
+<p>AirAPI is a convenient NodeJS wrapper for Airbnb's API endpoints.
+This is not affiliated nor endorsed by Airbnb.
+Airbnb does not provide public access to their API, so use at your own risk. 
+I'm not responsible for any misuse of this.</p>
+
+<h2>
+<a id="how-to" class="anchor" href="#how-to" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to</h2>
+
+<p>Install from npm</p>
+
+<pre><code>npm install airapi
+</code></pre>
+
+<p>APIs</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// Include the library in your app</span>
+<span class="pl-k">var</span> airbnb <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>airapi<span class="pl-pds">'</span></span>);
+
+<span class="pl-c">// Search</span>
+airbnb.<span class="pl-c1">search</span>(options);
+
+<span class="pl-c">// Get calendar</span>
+airbnb.getCalendar(options);
+
+<span class="pl-c">// Get hosting information</span>
+airbnb.getInfo(hostingId);
+
+<span class="pl-c">// Get hosting estimate income, given availability, </span>
+<span class="pl-c">// which can be retrieved using `airbnb.getCalendar()` above</span>
+airbnb.getEstIncome(hostingAvailability);
+
+<span class="pl-c">// Get hosting reviews</span>
+airbnb.getReviews(userId, options);</pre></div>
+
+<p><strong>NOTE: All of these API endpoints, except for <code>getEstIncome</code> return a promise.</strong></p>
+
+<h2>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<h3>
+<a id="search" class="anchor" href="#search" aria-hidden="true"><span class="octicon octicon-link"></span></a>Search</h3>
+
+<p>Search instant-bookable hostings in Seattle, Wa from July 3rd - July 6th, 2015, for 2 people, 2nd result page.</p>
+
+<div class="highlight highlight-javascript"><pre>airbnb.<span class="pl-c1">search</span>({
+ location<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>Seattle, WA<span class="pl-pds">'</span></span>,
+ checkin<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>07/03/2015<span class="pl-pds">'</span></span>,
+ checkout<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>07/06/2015<span class="pl-pds">'</span></span>,
+ guests<span class="pl-k">:</span> <span class="pl-c1">2</span>,
+ page<span class="pl-k">:</span> <span class="pl-c1">2</span>,
+ ib<span class="pl-k">:</span> <span class="pl-c1">true</span>
+}).then(<span class="pl-k">function</span>(<span class="pl-smi">searchResults</span>) {
+  <span class="pl-en">console</span><span class="pl-c1">.log</span>(searchResults);
+});</pre></div>
+
+<p>Possible search options </p>
+
+<pre><code>{
+  checkin: {String}, e.g: '04/30/2015'
+  checkout: {String},
+  guests: {Number},
+  page: {Number},
+  location: {String}, e.g: 'New York, NY' or 'Seattle, WA'
+  price_min: {Number},
+  price_max: {Number},
+  min_bedrooms: {Number},
+  min_bathrooms: {Number},
+  min_beds: {Number},
+  superhost: {Boolean},
+  hosting_amenities: {Array of id}, e.g: [1,4]
+  property_type_id: {Array of id}, e.g: [1]
+  languages: {Array of id}, e.g: [1,64]
+  keywords: {String}, e.g: 'ocean,view,balcony'
+  room_types: {Array}, e.g: ['Entire home/apt', 'Private room', 'Shared room']
+  ib: {Boolean}, instant-book
+  neighborhoods: {Array}, e.g: ['Belltown', 'Queen Anne']
+}
+</code></pre>
+
+<h3>
+<a id="hosting-calendar" class="anchor" href="#hosting-calendar" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hosting calendar</h3>
+
+<p>Get May + June 2015 calendar for hosting ID: 4569115</p>
+
+<div class="highlight highlight-javascript"><pre>airbnb.getCalendar(<span class="pl-c1">4569115</span>, {
+ currency<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>USD<span class="pl-pds">'</span></span>,
+ month<span class="pl-k">:</span> <span class="pl-c1">5</span>,
+ year<span class="pl-k">:</span> <span class="pl-c1">2015</span>,
+ count<span class="pl-k">:</span> <span class="pl-c1">2</span>
+}).then(<span class="pl-k">function</span>(<span class="pl-smi">schedules</span>) {
+  <span class="pl-en">console</span><span class="pl-c1">.log</span>(schedules);
+});</pre></div>
+
+<h3>
+<a id="hosting-information" class="anchor" href="#hosting-information" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hosting information</h3>
+
+<p>Get general information for hosting ID: 4569115</p>
+
+<div class="highlight highlight-javascript"><pre>airbnb.getInfo(<span class="pl-c1">4569115</span>).then(<span class="pl-k">function</span>(<span class="pl-smi">info</span>) {
+  <span class="pl-en">console</span><span class="pl-c1">.log</span>(info);
+});</pre></div>
+
+<h3>
+<a id="hosting-estimate-income" class="anchor" href="#hosting-estimate-income" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hosting estimate income</h3>
+
+<p>Estimate income for hosting ID: 4569115 for Jan + Feb, 2015</p>
+
+<div class="highlight highlight-javascript"><pre>airbnb.getCalendar(<span class="pl-c1">4569115</span>, {
+ currency<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>USD<span class="pl-pds">'</span></span>,
+ month<span class="pl-k">:</span> <span class="pl-c1">1</span>,
+ year<span class="pl-k">:</span> <span class="pl-c1">2015</span>,
+ count<span class="pl-k">:</span> <span class="pl-c1">2</span>
+}).then(<span class="pl-k">function</span>(<span class="pl-smi">schedules</span>) {
+  <span class="pl-en">console</span><span class="pl-c1">.log</span>(airbnb.getEstIncome(schedules));
+});</pre></div>
+
+<h3>
+<a id="hosting-reviews" class="anchor" href="#hosting-reviews" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hosting reviews</h3>
+
+<p>Get reviews for user ID: 4586440, as a host</p>
+
+<div class="highlight highlight-javascript"><pre>airbnb.getReviews(<span class="pl-c1">4586440</span>, {
+  page<span class="pl-k">:</span> <span class="pl-c1">1</span>,
+  role<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>host<span class="pl-pds">'</span></span>
+}).then(<span class="pl-k">function</span>(<span class="pl-smi">reviews</span>) {
+  <span class="pl-en">console</span><span class="pl-c1">.log</span>(reviews);
+});</pre></div>
+
+<p>Get reviews for user ID: 4586440, as a guest</p>
+
+<div class="highlight highlight-javascript"><pre>airbnb.getReviews(<span class="pl-c1">4586440</span>, {
+  page<span class="pl-k">:</span> <span class="pl-c1">1</span>,
+  role<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>guest<span class="pl-pds">'</span></span>
+}).then(<span class="pl-k">function</span>(<span class="pl-smi">reviews</span>) {
+  <span class="pl-en">console</span><span class="pl-c1">.log</span>(reviews);
+});</pre></div>
+
+<ul>
+<li>To run the example</li>
+</ul>
+
+<div class="highlight highlight-javascript"><pre>git clone https<span class="pl-k">:</span><span class="pl-c">//github.com/phamtrisi/airapi.git airapi</span>
+cd airapi <span class="pl-k">&amp;&amp;</span> npm install <span class="pl-k">&amp;&amp;</span> node example.js</pre></div>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Free to use. Please star if this is helpful to you.</p>
+        </section>
+
+        <footer>
+          AirAPI is maintained by <a href="https://github.com/phamtrisi">phamtrisi</a><br>
+          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
