@@ -10,26 +10,30 @@ I'm not responsible for any misuse of this.
 
 ```javascript
 // Include the library in your app
-var airbnb = require('airbnb');
+var airbnb = require('airapi');
 
 // Search
-airbnb.search(configs, callback);
+airbnb.search(options);
 
 // Get calendar
-airbnb.availability(configs, callback);
+airbnb.getCalendar(options);
 
 // Get hosting information
-airbnb.info(hostingId, callback);
+airbnb.getInfo(hostingId);
 
-// Get hosting estimate income
-airbnb.income(hostingAvailability);
+// Get hosting estimate income, given availability, which can be retrieved using `airbnb.getCalendar()` above
+airbnb.getEstIncome(hostingAvailability);
 
 // Get hosting reviews
-airbnb.review(hostingId, configs, callback);
+airbnb.getReviews(userId, options);
 ```
 
-##API
+**NOTE: All of these API endpoints return a promise.**
+
+##Examples
 ###Search
+
+Search instant-bookable hostings in Seattle, Wa from July 3rd - July 6th, 2015, for 2 people, 2nd result page.
 ```javascript
 airbnb.search({
  location: 'Seattle, WA',
@@ -38,81 +42,89 @@ airbnb.search({
  guests: 2,
  page: 2,
  ib: true
-}, function(hostings, response) {
-  // hosting - the list of hostings objects returned. See documentation for Hosting object below.
-  // response - the original HTTP request response
+}).then(function(searchResults) {
+  console.log(searchResults);
 });
 ```
-- search options 
-```
+
+Possible search options 
+```json
 {
- *   checkin: {String},
- *   checkout: {String},
- *   guests: {Number},
- *   page: {Number},
- *   location: {String}, e.g: 'New York, NY' or 'Seattle, WA'
- *   price_min: {Number},
- *   price_max: {Number},
- *   min_bedrooms: {Number},
- *   min_bathrooms: {Number},
- *   min_beds: {Number},
- *   superhost: {Boolean},
- *   hosting_amenities: {Array of id}, e.g: [1,4]
- *   property_type_id: {Array of id}, e.g: [1]
- *   languages: {Array of id}, e.g: [1,64]
- *   keywords: {String}, e.g: 'ocean,view,balcony'
- *   room_types: {Array}, e.g: ['Entire home/apt', 'Private room', 'Shared room']
- *   ib: {Boolean}, instant-book,
- *   neighborhoods: {Array}, e.g: ['Belltown', 'Queen Anne']
- * }
+  checkin: {String}, e.g: '04/30/2015'
+  checkout: {String},
+  guests: {Number},
+  page: {Number},
+  location: {String}, e.g: 'New York, NY' or 'Seattle, WA'
+  price_min: {Number},
+  price_max: {Number},
+  min_bedrooms: {Number},
+  min_bathrooms: {Number},
+  min_beds: {Number},
+  superhost: {Boolean},
+  hosting_amenities: {Array of id}, e.g: [1,4]
+  property_type_id: {Array of id}, e.g: [1]
+  languages: {Array of id}, e.g: [1,64]
+  keywords: {String}, e.g: 'ocean,view,balcony'
+  room_types: {Array}, e.g: ['Entire home/apt', 'Private room', 'Shared room']
+  ib: {Boolean}, instant-book
+  neighborhoods: {Array}, e.g: ['Belltown', 'Queen Anne']
+}
 ```
-###Hosting availability
+###Hosting calendar
+
+Get May + June 2015 calendar for hosting ID: 4569115
 ```javascript
-airbnb.availability(4569115, {
+airbnb.getCalendar(4569115, {
  currency: 'USD',
  month: 5,
  year: 2015,
  count: 2
-}, function(availability) {
-  // availability - hosting's calendar for given months
+}).then(function(schedules) {
+  console.log(schedules);
 });
 ```
 
 ###Hosting information
+
+Get general information for hosting ID: 4569115
 ```javascript
-airbnb.info(4569115, function(info) {
+airbnb.getInfo(4569115).then(function(info) {
   console.log(info);
 });
 ```
 
 ###Hosting estimate income
+
+Estimate income for hosting ID: 4569115 for Jan + Feb, 2015
 ```javascript
-airbnb.availability(4569115, {
+airbnb.getCalendar(4569115, {
  currency: 'USD',
  month: 1,
  year: 2015,
  count: 2
-}, function(availability) {
-  console.log(airbnb.income(availability));
+}).then(function(schedules) {
+  console.log(airbnb.getEstIncome(schedules));
 });
 ```
 
 ###Hosting reviews
+
+Get reviews for user ID: 4586440, as a host
 ```javascript
-airbnb.reviews(4586440, {
+airbnb.getReviews(4586440, {
   page: 1,
   role: 'host'
-}, function(err, res, reviews) {
+}).then(function(reviews) {
   console.log(reviews);
 });
 ```
 
-- Get user reviews for user ID 4586440, as a guest
+Get reviews for user ID: 4586440, as a guest
 ```javascript
-airbnb.reviews(4586440, {
+airbnb.getReviews(4586440, {
   page: 1,
   role: 'guest'
-}, function(reviews) {
+}).then(function(reviews) {
   console.log(reviews);
 });
 ```
@@ -121,31 +133,6 @@ airbnb.reviews(4586440, {
 ```javascript
 git clone https://github.com/phamtrisi/airapi.git airapi
 cd airapi && npm install && node example.js
-```
-
-###Using the Hosting object model
-*search* will return a list of Hosting, with methods to get info, availability and reviews, so you don't have to use the API methods directly. You can do
-
-```js
-var hosting = new airbnb.Hosting(56200); // 56200 is hosting ID
-
-hosting.getInfo(function(info) {
- console.log(info);
-});
-
-hosting.getAvailability({
- month: 6,
- year: 2015,
- count: 6
-}, function(info) {
- console.log(info);
-});
-
-hosting.getReviews({
- role: 'host'
-}, function(reviews) {
- console.log(reviews);
-});
 ```
 
 ##License

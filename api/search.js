@@ -1,18 +1,15 @@
 var request = require('request'),
   _ = require('lodash'),
-  secrets = require('../_secrets'),
   configs = require('../configs'),
   serialize = require('../helpers/serialize'),
-  Hosting = require('../models/Hosting');
+  Promise = require('bluebird');
 
 /**
  * Search hostings
  * @param  {Object} options - Search options
- * @param  {Function} successCallback(err, res, listings) - Callback to invoke if successful 
- * @param  {Function} failureCallback(err, res) - Callback to invoke if failed 
- * @return {Void} - List of found hostings is passed through callbacks
+ * @return {Promise} - contains JSON response if success 
  *
- * Available options 
+ * Available search options 
  * options = {
  *   checkin: {String},
  *   checkout: {String},
@@ -34,36 +31,31 @@ var request = require('request'),
  *   neighborhoods: {Array}, e.g: ['Belltown', 'Queen Anne']
  * }
  */
-function search(options, successCallback, failureCallback) {
-  // Make sure search options is provided
-  if (!options || !_.isObject(options)) {
-    throw new Error('Must provide search options');
-  }
+function search(options) {
 
-  var requestConfigs = _.assign({}, configs.DEFAULT_REQUEST_CONFIGS, {
-    url: configs.SEARCH_URL + '?' + serialize(options)
-  }),
-    hostings = [],
-    searchResp;
+  return new Promise(function(resolve, reject) {
 
-  // Make request
-  request(requestConfigs, function(err, res, body) {
-    if (!err && res.statusCode == 200 && _.isFunction(successCallback)) {
-      searchResp = JSON.parse(body);
-      
-      try {
-        hostings = searchResp.property_ids.map(function(propertyId) {
-          return new Hosting(propertyId);
-        });
-      }
-      catch(err) {
-        hostings = [];
-      }
-
-      successCallback(hostings, searchResp);
-    } else if (err && _.isFunction(failureCallback)) {
-      failureCallback(err, res);
+    // Make sure search options is provided
+    if (!options || !_.isObject(options)) {
+      reject('Must provide search options');
     }
+
+    var requestConfigs = _.assign({}, configs.DEFAULT_REQUEST_CONFIGS, {
+      url: configs.SEARCH_URL + '?' + serialize(options)
+    });
+
+    // Make request
+    request(requestConfigs, function(err, res, body) {
+      if (!err && res.statusCode == 200) {
+
+        // Resolve
+        resolve(JSON.parse(body));
+      } else if (err) {
+
+        // Reject
+        reject(err);
+      }
+    });
   });
 }
 

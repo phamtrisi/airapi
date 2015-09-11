@@ -1,40 +1,44 @@
 var airbnb = require('./airbnb');
 
-// Search for available listings in NYC, July 4th - 6th, 2 people
-// Then print out their info
+// Search for available listings in NYC
 airbnb.search({
   location: 'New York, NY',
   checkin: '07/04/2015',
   checkout: '07/06/2015',
   guests: 2,
   page: 1
-}, function(hostings, resp) {
-  hostings.forEach(function(hosting) {
-    // Get info
-    hosting.getInfo(function(info) {
-      console.log(info);
-    });    
-  });
-}, function(err, res) {
-  console.log('Error: ', err);
+}).then(function(results) {
+  console.log(results);
 });
 
-// User the Hosting model to create a hosting object (ID: 56200)
-var hosting1 = new airbnb.Hosting(56200);
+// Get info for hosting ID: 4639847
+airbnb.getInfo(4639847).then(function(info) {
+  console.log(info);
+});
 
-// Get availability from June to Nov 2015 for this hosting
-hosting1.getAvailability({
+// Get calendar from June to Nov 2015 for hosting ID: 4639847
+airbnb.getCalendar(4639847, {
   month: 6,
   year: 2015,
   count: 6
-}, function(availability) {
-  console.log(availability);
+}).then(function(schedules) {
+  console.log(schedules);
 });
 
-// Get reviews for this hosting
-hosting1.getReviews({
+// Get reviews for user ID: 4586440
+airbnb.getReviews(4586440, {
   role: 'host'
-}, function(reviews) {
+}).then(function(reviews) {
   console.log(reviews);
+});
+
+// Estimate income for hosting ID: 4569115 for Jan + Feb, 2015
+airbnb.getCalendar(4569115, {
+ currency: 'USD',
+ month: 1,
+ year: 2015,
+ count: 2
+}).then(function(schedules) {
+  console.log(airbnb.getEstIncome(schedules));
 });
 
