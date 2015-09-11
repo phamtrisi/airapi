@@ -8,6 +8,12 @@ I'm not responsible for any misuse of this.
 
 ##How to
 
+Install from npm
+```
+npm install airapi
+```
+
+APIs
 ```javascript
 // Include the library in your app
 var airbnb = require('airapi');
