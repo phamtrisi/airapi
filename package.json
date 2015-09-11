@@ -1,7 +1,7 @@
 {
   "name": "airapi",
   "version": "0.0.2",
-  "description": "A JS wrapper for airBnb API",
+  "description": "A JS wrapper for airbnb API",
   "author": "Si Pham (phamtrisi@gmail.com)",
   "scripts": {},
   "main": "airbnb.js",
