@@ -52,7 +52,7 @@ airbnb.search({
 });
 ```
 
-Possible search options 
+Possible search options. This is subject to change periodically. I'll try to keep it as up-to-date as possible 
 ```
 {
   checkin: {String}, e.g: '04/30/2015'
