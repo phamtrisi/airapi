@@ -141,4 +141,4 @@ cd airapi && npm install && node example.js
 ```
 
 ##License
-Free to use. Please star if this is helpful to you.
+[MIT](./LICENSE)
