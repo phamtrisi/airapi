@@ -6,13 +6,11 @@ This is not affiliated nor endorsed by Airbnb.
 Airbnb does not provide public access to their API, so use at your own risk. 
 I'm not responsible for any misuse of this.
 
-##How to
-
-Install from npm
+##Installation
 ```
-npm install airapi
+npm install airapi --save
 ```
-
+##Usage
 APIs
 ```javascript
 // Include the library in your app
