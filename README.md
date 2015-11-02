@@ -1,3 +1,6 @@
+UPDATE: Due to some recent changes in the API endpoints from Airbnb, currently it's not possible to calculate an estimate income for a listing. I'm looking into alternatives for this. Thank you.
+==============
+
 AirAPI
 ==============
 
