@@ -17,7 +17,7 @@ npm install airapi --save
 APIs
 ```javascript
 // Include the library in your app
-var airbnb = require('airapi');
+var airbnb = require('airapi')();
 
 // Search
 airbnb.search(options);
