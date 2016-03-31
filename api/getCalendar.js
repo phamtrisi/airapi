@@ -1,6 +1,6 @@
 var request = require('request'),
   _ = require('lodash'),
-  configs = require('../configs'),
+  configs = require('../configs/configs'),
   serialize = require('../helpers/serialize'),
   Promise = require('bluebird');
 
@@ -8,8 +8,8 @@ var request = require('request'),
  * Get calendar for a given hosting ID
  * @param  {[Number/String]} hosting ID         [description]
  * @param  {[Object]} options         [description]
- * @param  {Function} successCallback(err, res, info) - Callback to invoke if successful 
- * @param  {Function} failureCallback(err, res) - Callback to invoke if failed 
+ * @param  {Function} successCallback(err, res, info) - Callback to invoke if successful
+ * @param  {Function} failureCallback(err, res) - Callback to invoke if failed
  * @return {Void} - Listing info is passed through callbacks
  *
  * Available options
@@ -34,7 +34,7 @@ function getCalendar(hostingId, options) {
     });
 
   return new Promise(function(resolve, reject) {
-    
+
     // Make sure we have enough params to continue
     if (arguments.length < 2) {
       reject('Must provide hosting ID and search options');

@@ -1,15 +1,15 @@
 var request = require('request'),
   _ = require('lodash'),
-  configs = require('../configs'),
+  configs = require('../configs/configs'),
   serialize = require('../helpers/serialize'),
   Promise = require('bluebird');
 
 /**
  * Search hostings
  * @param  {Object} options - Search options
- * @return {Promise} - contains JSON response if success 
+ * @return {Promise} - contains JSON response if success
  *
- * Available search options 
+ * Available search options
  * options = {
  *   checkin: {String},
  *   checkout: {String},

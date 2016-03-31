@@ -1,7 +1,7 @@
 /**
  * airbnb Node wrapper for unofficial API
  * @author Si Pham <phamtrisi@gmail.com>
- * 
+ *
  * Support basic actions to interact with airbnb hostings
  * - search() - Search for hostings given conditions
  * - getInfo() - Get info about a hosting
@@ -14,12 +14,24 @@ var search = require('./api/search'),
     getInfo = require('./api/getInfo'),
     getCalendar = require('./api/getCalendar'),
     getReviews = require('./api/getReviews'),
-    getEstIncome = require('./api/getEstIncome');
+    getEstIncome = require('./api/getEstIncome'),
+    login = require('./api/login');
 
-module.exports = {
-  search: search,
-  getInfo: getInfo,
-  getCalendar: getCalendar,
-  getReviews: getReviews,
-  getEstIncome: getEstIncome
+var USERNAME = 'username',
+    PASSWORD = 'password';
+
+var AirbnbClient = function(optionalConfigs) {
+  optionalConfigs = optionalConfigs || {};
+
+  return {
+    configs: optionalConfigs,
+    search: search,
+    getInfo: getInfo,
+    getCalendar: getCalendar,
+    getReviews: getReviews,
+    getEstIncome: getEstIncome,
+    login: login
+  };
 };
+
+module.exports = AirbnbClient;

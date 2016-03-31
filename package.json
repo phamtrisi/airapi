@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "description": "A JS wrapper for airbnb API",
   "author": "Si Pham (phamtrisi@gmail.com)",
-  "scripts": {},
+  "scripts": {
+    "examples": "node ./examples/main.js"
+  },
   "main": "airbnb.js",
   "repository": {
     "type": "git",

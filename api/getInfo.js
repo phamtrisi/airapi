@@ -1,6 +1,6 @@
 var request = require('request'),
   _ = require('lodash'),
-  configs = require('../configs'),
+  configs = require('../configs/configs'),
   serialize = require('../helpers/serialize'),
   Promise = require('bluebird');
 
