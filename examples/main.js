@@ -1,7 +1,7 @@
 var airbnb = require('../airbnb'),
   client = new airbnb({
     username: 'phamtrisi@gmail.com',
-    password: 'Iasp200489'
+    password: '<your password here>'
   });
 
 client.login().then(function(res) {
