@@ -4,10 +4,8 @@ UPDATE: I apologize for the lack of maintenance on this repo recently. I finally
 AirAPI
 ==============
 
-AirAPI is a convenient NodeJS wrapper for Airbnb's API endpoints.
-This is not affiliated nor endorsed by Airbnb.
-Airbnb does not provide public access to their API, so use at your own risk. 
-I'm not responsible for any misuse of this.
+AirAPI is a convenient NodeJS wrapper for Airbnb's API endpoints. This is not affiliated nor endorsed by Airbnb.
+**Airbnb does not provide public access to their API, so use at your own risk. I'm not responsible for any misuse of this.**
 
 ## Installation
 ```
@@ -137,7 +135,7 @@ airbnb.getReviews(4586440, {
 });
 ```
 
-- To run the example
+To run the example
 ```javascript
 git clone https://github.com/phamtrisi/airapi.git airapi
 cd airapi && npm install && node example.js
