@@ -33,12 +33,14 @@ function getCalendar(hostingId, options) {
       _format: 'with_conditions'
     });
 
-  return new Promise(function(resolve, reject) {
-
-    // Make sure we have enough params to continue
-    if (arguments.length < 2) {
+  // Make sure we have enough params to continue
+  if (arguments.length < 2) {
+    return new Promise(function(ignore, reject) {
       reject('Must provide hosting ID and search options');
-    }
+    });
+  }
+
+  return new Promise(function(resolve, reject) {
 
     if (!_.isNumber(hostingId) &&
       !_.isString(hostingId)) {
