@@ -1,4 +1,4 @@
-UPDATE: I apologize for the lack of maintenance on this repo recently. I finally found some free time now so I'll be working on tuning this and updating it with new functionalities. Stay tuned! Thanks for stopping by.
+UPDATE: I've not been able to maintain this repo for a long time. You might wanna check out https://github.com/zxol/airbnbapi as it might be better maintained. Thanks!
 ==============
 
 AirAPI
